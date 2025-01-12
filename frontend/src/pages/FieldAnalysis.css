@@ -1,0 +1,41 @@
+/* FieldAnalysis.css */
+.custom-datatable {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background-color: #fff;
+    overflow: hidden;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.custom-datatable .p-datatable-thead > tr > th {
+    background-color: #f4f6f9;
+    color: #555;
+    text-align: left;
+    padding: 12px 10px;
+    font-weight: bold;
+    font-size: 0.95rem;
+    border-bottom: 2px solid #e0e0e0;
+}
+
+.custom-datatable .p-datatable-tbody > tr {
+    transition: background-color 0.2s ease;
+}
+
+.custom-datatable .p-datatable-tbody > tr:nth-child(odd) {
+    background-color: #f9f9f9;
+}
+
+.custom-datatable .p-datatable-tbody > tr:hover {
+    background-color: #f1f1f1;
+}
+
+.custom-datatable .p-datatable-tbody > tr > td {
+    padding: 10px;
+    font-size: 0.9rem;
+    color: #555;
+    border-bottom: 1px solid #eee;
+}
+
+.custom-datatable .p-datatable-tbody > tr:last-child > td {
+    border-bottom: none;
+}
