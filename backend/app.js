@@ -39,8 +39,22 @@ app.options('*', cors(corsOptions));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+app.use((req, res, next) => {
+    console.log('Incoming request:', {
+        method: req.method,
+        url: req.url,
+        origin: req.headers.origin,
+        headers: req.headers
+    });
+    next();
+});
+
 app.get("/", (req, res) => {
-    res.send("Standard root");
+    res.status(200).json({
+        root:"Standard root",
+        db:process.env.MONGO_URI,
+    });
+    // res.send("Standard root");
 });
 
 app.use("/api/v1/auth", authRoutes);
