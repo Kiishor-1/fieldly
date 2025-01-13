@@ -1,9 +1,10 @@
 const Field = require("../models/Field");
+const User = require('../models/User')
 
-// Get all fields
-const getAllFields = async (req, res) => {
+const getUserOwnedFields = async (req, res) => {
   try {
-    const fields = await Field.find();
+    const fields = await Field.find({ owner: req.user.id }).populate("owner", "name email");
+
     res.json({
       success: true,
       message: "Fields fetched successfully",
@@ -18,7 +19,7 @@ const getAllFields = async (req, res) => {
   }
 };
 
-// Get a single field by ID
+
 const getFieldById = async (req, res) => {
   try {
     const field = await Field.findById(req.params.id);
@@ -42,12 +43,10 @@ const getFieldById = async (req, res) => {
   }
 };
 
-// Create a new field
 const createField = async (req, res) => {
   try {
     const { name, cropType, areaSize, location } = req.body;
 
-    // Validate location format
     if (!Array.isArray(location) || location.length !== 2) {
       return res.status(400).json({
         success: false,
@@ -55,14 +54,28 @@ const createField = async (req, res) => {
       });
     }
 
-    const field = await Field.create({ name, cropType, areaSize, location });
+    const field = await Field.create({
+      name,
+      cropType,
+      areaSize,
+      location,
+      owner: req.user.id, 
+    });
+
+    const user = await User.findById(req.user.id); 
+    if (!user) {
+      return res.status(404).json({ success: false, message: "User not found" });
+    }
+    user.fields.push(field._id);
+    await user.save();
+
     res.status(201).json({
       success: true,
       message: "Field created successfully",
       data: field,
     });
   } catch (err) {
-    console.log(err)
+    console.log(err);
     res.status(500).json({
       success: false,
       message: "Error creating field",
@@ -71,12 +84,12 @@ const createField = async (req, res) => {
   }
 };
 
-// Update a field
 const updateField = async (req, res) => {
   try {
     const { location } = req.body;
 
-    // Validate location format if provided
+    console.log(req.body)
+
     if (location && (!Array.isArray(location) || location.length !== 2)) {
       return res.status(400).json({
         success: false,
@@ -86,7 +99,7 @@ const updateField = async (req, res) => {
 
     const field = await Field.findByIdAndUpdate(req.params.id, req.body, {
       new: true,
-      runValidators: true, // Ensures the updated data complies with the schema
+      runValidators: true,
     });
     if (!field) {
       return res.status(404).json({
@@ -108,21 +121,40 @@ const updateField = async (req, res) => {
   }
 };
 
-// Delete a field
 const deleteField = async (req, res) => {
+  console.log('id toh hai kya',req.params.id)
   try {
-    const field = await Field.findByIdAndDelete(req.params.id);
+    const field = await Field.findById(req.params.id);
     if (!field) {
       return res.status(404).json({
         success: false,
         message: "Field not found",
       });
     }
+
+    if (field.owner.toString() !== req.user.id) {
+      return res.status(403).json({
+        success: false,
+        message: "You are not authorized to delete this field.",
+      });
+    }
+
+    await Field.findByIdAndDelete(req.params.id)
+
+    const user = await User.findById(req.user.id);
+    if (user) {
+      user.fields = user.fields.filter(
+        (fieldId) => fieldId.toString() !== field._id.toString()
+      );
+      await user.save();
+    }
+
     res.json({
       success: true,
       message: "Field deleted successfully",
     });
   } catch (err) {
+    console.log(err)
     res.status(500).json({
       success: false,
       message: "Error deleting field",
@@ -132,7 +164,7 @@ const deleteField = async (req, res) => {
 };
 
 module.exports = {
-  getAllFields,
+  getUserOwnedFields,
   getFieldById,
   createField,
   updateField,

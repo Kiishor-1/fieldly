@@ -7,13 +7,12 @@ import { FaMagnifyingGlass } from "react-icons/fa6";
 // Mapbox access token
 mapboxgl.accessToken =import.meta.env.VITE_REACT_APP_MAPBOX_API_KEY;
 
-const MapInput = ({ onCoordinatesChange }) => {
+const MapInput = ({ onCoordinatesChange, initialCoordinates }) => {
   const mapContainerRef = useRef(null); 
   const markerRef = useRef(null); 
   const [map, setMap] = useState(null);
   const [searchQuery, setSearchQuery] = useState(""); 
 
-  // Helper function to determine night mode
   const isNightTimeInIndia = () => {
     const now = new Date();
     const hours = (now.getUTCHours() + 5.5) % 24; 
@@ -28,7 +27,7 @@ const MapInput = ({ onCoordinatesChange }) => {
       style: isNightTimeInIndia()
         ? "mapbox://styles/mapbox/dark-v11"
         : "mapbox://styles/mapbox/streets-v12",
-      center: [81.62254190962483, 21.239501981012054],
+      center: initialCoordinates ? initialCoordinates :[81.62254190962483, 21.239501981012054],
       zoom: 9,
       attributionControl: false, 
     });
@@ -45,7 +44,6 @@ const MapInput = ({ onCoordinatesChange }) => {
         markerRef.current.remove();
       }
 
-      // Add marker at the clicked position
       markerRef.current = new mapboxgl.Marker({ offset: [275, -458] })
         .setLngLat([lng, lat])
         .addTo(initializedMap);
@@ -54,7 +52,7 @@ const MapInput = ({ onCoordinatesChange }) => {
     return () => {
       initializedMap.remove();
     };
-  }, [onCoordinatesChange]);
+  }, [onCoordinatesChange, initialCoordinates]);
 
   const handleSearch = async () => {
     if (!searchQuery.trim()) return;
@@ -69,20 +67,15 @@ const MapInput = ({ onCoordinatesChange }) => {
       if (response.data.features.length > 0) {
         const [lng, lat] = response.data.features[0].center;
 
-        // Zoom to the searched location
         map.flyTo({ center: [lng, lat], zoom: 11 });
 
-        // Remove existing marker if present
         if (markerRef.current) {
           markerRef.current.remove();
         }
-
-        // Add marker at the searched location
         markerRef.current = new mapboxgl.Marker({ offset: [0, -15] })
           .setLngLat([lng, lat])
           .addTo(map);
 
-        // Notify parent about coordinates
         onCoordinatesChange([lng, lat]);
       } else {
         console.error("No results found for the search query.");
@@ -95,7 +88,6 @@ const MapInput = ({ onCoordinatesChange }) => {
 
   return (
     <div className="flex flex-col w-full h-full">
-      {/* Search Input */}
       <div className="mb-4 flex items-center border rounded">
         <input
           type="text"
@@ -112,8 +104,6 @@ const MapInput = ({ onCoordinatesChange }) => {
           <FaMagnifyingGlass/>
         </button>
       </div>
-
-      {/* Map Container */}
       <div
         className="map-container rounded-lg flex-1"
         ref={mapContainerRef}

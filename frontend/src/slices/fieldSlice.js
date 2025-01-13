@@ -1,54 +1,95 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { apiConnector } from "../services/apiConnector";
+import { FIELD_ENDPOINTS } from "../services/api";
 
-// Async thunks for CRUD operations
-export const fetchAllFields = createAsyncThunk("fields/fetchAllFields", async (_, { rejectWithValue }) => {
-    try {
-        const response = await apiConnector("GET", "/fields");
-        console.log("data is",response?.data)
-        return response.data;
-    } catch (error) {
-        return rejectWithValue(error.response?.data || { message: "Error fetching fields" });
+
+const {
+    FETCH_USER_FIELDS,
+    FETCH_FIELD_BY_ID,
+    CREATE_FIELD,
+    UPDATE_FIELD,
+    DELETE_FIELD
+} = FIELD_ENDPOINTS;
+
+export const fetchAllFields = createAsyncThunk(
+    "fields/fetchAllFields",
+    async (_, { rejectWithValue, getState }) => {
+        try {
+            const token = getState().auth.token; // Extract the token from the auth slice
+            const headers = token ? { Authorization: `Bearer ${token}` } : {}; // Include the token in headers if available
+
+            const response = await apiConnector("GET", FETCH_USER_FIELDS, null, headers);
+            console.log("data is", response?.data);
+            return response.data;
+        } catch (error) {
+            return rejectWithValue(error.response?.data || { message: "Error fetching fields" });
+        }
     }
-});
+);
 
-export const fetchFieldById = createAsyncThunk("fields/fetchFieldById", async (id, { rejectWithValue }) => {
-    try {
-        const response = await apiConnector("GET", `/fields/${id}`);
-        return response.data;
-    } catch (error) {
-        return rejectWithValue(error.response?.data || { message: "Error fetching field" });
+export const fetchFieldById = createAsyncThunk(
+    "fields/fetchFieldById",
+    async (id, { rejectWithValue, getState }) => {
+        try {
+            const token = getState().auth.token;
+            const headers = token ? { Authorization: `Bearer ${token}` } : {};
+
+            const response = await apiConnector("GET", FETCH_FIELD_BY_ID(id), null, headers);
+            return response.data;
+        } catch (error) {
+            return rejectWithValue(error.response?.data || { message: "Error fetching field" });
+        }
     }
-});
+);
 
-export const createField = createAsyncThunk("fields/createField", async (fieldData, { rejectWithValue }) => {
-    try {
-        const response = await apiConnector("POST", "/fields", fieldData);
-        return response.data;
-    } catch (error) {
-        return rejectWithValue(error.response?.data || { message: "Error creating field" });
+export const createField = createAsyncThunk(
+    "fields/createField",
+    async (fieldData, { rejectWithValue, getState }) => {
+        try {
+            const token = getState().auth.token;
+            const headers = token ? { Authorization: `Bearer ${token}` } : {};
+
+            const response = await apiConnector("POST", CREATE_FIELD, fieldData, headers);
+            return response.data;
+        } catch (error) {
+            return rejectWithValue(error.response?.data || { message: "Error creating field" });
+        }
     }
-});
+);
 
-export const updateField = createAsyncThunk("fields/updateField", async ({ id, updatedData }, { rejectWithValue }) => {
-    try {
-        const response = await apiConnector("PUT", `/fields/${id}`, updatedData);
-        return response.data;
-    } catch (error) {
-        return rejectWithValue(error.response?.data || { message: "Error updating field" });
+
+export const updateField = createAsyncThunk(
+    "fields/updateField",
+    async ({ id, data }, { rejectWithValue, getState }) => { // Renamed `updatedData` to `data`
+        try {
+            const token = getState().auth.token;
+            const headers = token ? { Authorization: `Bearer ${token}` } : {};
+
+            const response = await apiConnector("PUT", UPDATE_FIELD(id), data, headers);
+            return response.data;
+        } catch (error) {
+            return rejectWithValue(error.response?.data || { message: "Error updating field" });
+        }
     }
-});
+);
 
-export const deleteField = createAsyncThunk("fields/deleteField", async (id, { rejectWithValue }) => {
-    try {
-        const response = await apiConnector("DELETE", `/fields/${id}`);
-        return response.data;
-    } catch (error) {
-        return rejectWithValue(error.response?.data || { message: "Error deleting field" });
+
+export const deleteField = createAsyncThunk(
+    "fields/deleteField",
+    async (id, { rejectWithValue, getState }) => {
+        try {
+            const token = getState().auth.token;
+            const headers = token ? { Authorization: `Bearer ${token}` } : {};
+
+            const response = await apiConnector("DELETE", DELETE_FIELD(id), null, headers);
+            return response.data;
+        } catch (error) {
+            return rejectWithValue(error.response?.data || { message: "Error deleting field" });
+        }
     }
-});
+);
 
-// Initial state
+
 const initialState = {
     fields: [],
     field: null,
@@ -57,7 +98,6 @@ const initialState = {
     successMessage: null,
 };
 
-// Slice
 const fieldSlice = createSlice({
     name: "fields",
     initialState,
@@ -69,7 +109,6 @@ const fieldSlice = createSlice({
         },
     },
     extraReducers: (builder) => {
-        // Fetch all fields
         builder
             .addCase(fetchAllFields.pending, (state) => {
                 state.isLoading = true;
@@ -86,7 +125,6 @@ const fieldSlice = createSlice({
                 state.error = action.payload.message;
             });
 
-        // Fetch field by ID
         builder
             .addCase(fetchFieldById.pending, (state) => {
                 state.isLoading = true;
@@ -102,7 +140,6 @@ const fieldSlice = createSlice({
                 state.error = action.payload.message;
             });
 
-        // Create a field
         builder
             .addCase(createField.pending, (state) => {
                 state.isLoading = true;
@@ -118,7 +155,6 @@ const fieldSlice = createSlice({
                 state.error = action.payload.message;
             });
 
-        // Update a field
         builder
             .addCase(updateField.pending, (state) => {
                 state.isLoading = true;
@@ -137,7 +173,6 @@ const fieldSlice = createSlice({
                 state.error = action.payload.message;
             });
 
-        // Delete a field
         builder
             .addCase(deleteField.pending, (state) => {
                 state.isLoading = true;

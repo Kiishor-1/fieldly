@@ -79,7 +79,6 @@ export default function Login() {
                     className="w-full max-w-md space-y-6 bg-white rounded-lg p-8">
                     <p className="text-2xl font-semibold text-gray-800 text-center">Login</p>
 
-                    {/* Email Input */}
                     <div className="flex items-center border rounded-lg p-2">
                         <CiMail className="font-bold mx-1" fontSize="1.5rem" />
                         <input
@@ -93,7 +92,6 @@ export default function Login() {
 
                     </div>
 
-                    {/* Password Input */}
                     <div className="flex items-center border rounded-lg p-2">
                         <CiLock className="font-bold mx-1" fontSize="1.5rem" />
                         <input
@@ -112,7 +110,6 @@ export default function Login() {
                         }
                     </div>
 
-                    {/* Buttons */}
                     <div className="flex flex-col items-center gap-4">
                         <button
                             type="submit"

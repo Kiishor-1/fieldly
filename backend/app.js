@@ -10,6 +10,7 @@ const port = process.env.PORT || 8080;
 
 const authRoutes = require('./routes/authRoutes');
 const fieldRoute = require('./routes/fieldRoutes')
+const subscriptionRoutes = require('./routes/subscriptionRoutes')
 
 const FRONT_ENDS = process.env.FRONT_ENDS.split(',');
 
@@ -39,31 +40,20 @@ app.options('*', cors(corsOptions));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-app.use((req, res, next) => {
-    console.log('Incoming request:', {
-        method: req.method,
-        url: req.url,
-        origin: req.headers.origin,
-        headers: req.headers
-    });
-    next();
-});
 
 app.get("/", (req, res) => {
     res.status(200).json({
         root:"Standard root",
-        db:process.env.MONGO_URI,
     });
-    // res.send("Standard root");
 });
 
 app.use("/api/v1/auth", authRoutes);
 app.use("/api/v1/fields", fieldRoute);
+app.use("/api/v1/subscriptions", subscriptionRoutes);
 app.post("/api/v1/generate-analysis", (req, res) => {
     try {
         const { cost, stock, growth, analytics } = req.body;
 
-        // Simulating AI response based on input variables
         const response = `
         Based on the given data: 
         - Cost is ${cost}.

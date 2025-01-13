@@ -82,9 +82,6 @@ export default function Register() {
 
     return (
         <div className="flex flex-col md:flex-row w-full min-h-screen font-sans">
-
-
-            {/* Form Section */}
             <div className="flex-1 flex flex-col items-center justify-center py-8 px-4">
                 <form
                     onSubmit={handleSubmit}
@@ -94,7 +91,6 @@ export default function Register() {
                         Register
                     </p>
 
-                    {/* Name Input */}
                     <div className="flex items-center border rounded-lg p-2">
                     <CiUser className="font-bold mx-1" fontSize="1.5rem" />
                         <input
@@ -107,8 +103,6 @@ export default function Register() {
                         />
                     </div>
 
-
-                    {/* Email Input */}
                     <div className="flex items-center border rounded-lg p-2">
                     <CiMail className="font-bold mx-1" fontSize="1.5rem" />
                         <input
@@ -121,7 +115,7 @@ export default function Register() {
                         />
                     </div>
 
-                    {/* Password Input */}
+
                     <div className="flex items-center border rounded-lg p-2">
                         <CiLock className="font-bold mx-1" fontSize="1.5rem" />
                         <input
@@ -145,7 +139,6 @@ export default function Register() {
                         </span>
                     </div>
 
-                    {/* Confirm Password Input */}
                     <div className="flex items-center border rounded-lg p-2">
                         <CiLock className="font-bold mx-1" fontSize="1.5rem" />
                         <input
@@ -164,7 +157,6 @@ export default function Register() {
                         }
                     </div>
 
-                    {/* Buttons */}
                     <div className="space-y-4 text-center">
                         <button className="w-full py-2 rounded-full bg-teal-500 text-white text-lg font-semibold shadow hover:bg-teal-600">
                             Register

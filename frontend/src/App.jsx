@@ -10,8 +10,6 @@ import Subscriptions from './pages/Subscriptions'
 import FieldAnalysis from './pages/FieldAnalysis'
 
 function App() {
-  // const location = useLocation();
-  // const NoNavbarAndFooter = location.pathname !== ''
   return (
     <div>
       <Routes>

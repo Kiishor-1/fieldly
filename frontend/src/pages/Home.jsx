@@ -36,6 +36,7 @@ const Home = () => {
       sessionExpired();
     }
   }, [token, user, navigate, dispatch]);
+  console.log(token)
 
   const handleLogout = async () => {
     try {
@@ -73,8 +74,8 @@ const Home = () => {
       >
         <div className="w-full flex items-center justify-center md:px-2 px-2 py-2">
           <div className="flex items-center justify-center w-full md:text-3xl font-bold text-2xl">
-            <img src="/images/logo.png" className="w-12" alt="Logo" />
-            <span className="text-white md:drop-shadow-[3px_3px_2px_black] drop-shadow-[3px_3px_2px_black]">
+            <img src="/images/logo.png" className="w-10" alt="Logo" />
+            <span className="text-white px-2 md:drop-shadow-[3px_3px_2px_black] drop-shadow-[3px_3px_2px_black]">
             Fieldly
             </span>
           </div>
@@ -127,7 +128,7 @@ const Home = () => {
         className={`flex-1 ps-4 transition-opacity duration-300 ${isSidebarOpen ? "opacity-50" : "opacity-100"
           } overflow-y-auto hideScroll`}
       >
-        {/* <Header toggleSidebar={toggleSidebar} /> */}
+        <Header toggleSidebar={toggleSidebar} />
         <Outlet />
       </div>
 

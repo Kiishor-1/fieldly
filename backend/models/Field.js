@@ -8,9 +8,14 @@ const FieldSchema = new mongoose.Schema(
       trim: true,
     },
     cropType: {
-      type: String,
+      type: [String],
       required: [true, "Crop type is required"],
-      trim: true,
+      validate: {
+        validator: function (value) {
+          return Array.isArray(value) && value.length > 0;
+        },
+        message: "Crop type must be a non-empty array.",
+      },
     },
     areaSize: {
       type: Number,
@@ -18,7 +23,7 @@ const FieldSchema = new mongoose.Schema(
       min: [0, "Area size must be greater than or equal to 0"],
     },
     location: {
-      type: [Number], // Array of numbers: [longitude, latitude]
+      type: [Number], 
       required: [true, "Location is required"],
       validate: {
         validator: function (value) {
@@ -28,15 +33,19 @@ const FieldSchema = new mongoose.Schema(
         message: "Location must be an array of two numbers: [longitude, latitude]",
       },
     },
+    owner: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
+    },
     createdAt: {
       type: Date,
       default: Date.now,
     },
   },
   {
-    timestamps: true, // Automatically manage `createdAt` and `updatedAt` fields
+    timestamps: true,
   }
 );
 
 module.exports = mongoose.model("Field", FieldSchema);
-

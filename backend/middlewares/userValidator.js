@@ -5,7 +5,7 @@ const userValidator = async (req, res, next) => {
         const { error } = userSchema.validate(req.body);
 
         if (error) {
-            // console.log(error)
+            console.log(error)
             const errorMessage = error.details[0].message;
             return res.status(400).json({
                 success: false,

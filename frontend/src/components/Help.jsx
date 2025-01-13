@@ -33,7 +33,6 @@ const Help = ({ onClose }) => {
 
     return (
         <div className="bg-white relative rounded-xl md:w-[500px] w-full min-h-[70vh] flex flex-col items-center justify-center p-6">
-            {/* Header */}
             <div className="flex absolute top-2 right-2 justify-between items-center mb-4 px-2 w-full">
                 <h2 className="text-xl font-semibold text-gray-700">Help & Support</h2>
                 <button
@@ -44,7 +43,6 @@ const Help = ({ onClose }) => {
                 </button>
             </div>
 
-            {/* Accordion for FAQs */}
             <div className="space-y-2 w-full">
                 {faqs.map((faq, index) => (
                     <div key={index} className="border-b pb-2">
@@ -66,10 +64,8 @@ const Help = ({ onClose }) => {
                 ))}
             </div>
 
-            {/* Divider */}
             <div className="my-4 border-t"></div>
 
-            {/* Help Message Form */}
             <form onSubmit={handleSubmit} className="flex flex-col space-y-4 w-full">
                 <textarea
                     value={message}

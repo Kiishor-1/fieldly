@@ -18,9 +18,20 @@ const userSchema = new mongoose.Schema({
     tokenVersion: {
         type: Number,
         default: 0,
-    }
-})
+    },
+    subscribedSubscriptions: [
+        {
+            type: Schema.Types.ObjectId,
+            ref: 'Subscription',
+        },
+    ],
+    fields: [
+        {
+            type: Schema.Types.ObjectId,
+            ref: 'Field',
+        },
+    ],
+});
 
-
-const User = mongoose.model("User", userSchema);
+const User = mongoose.model('User', userSchema);
 module.exports = User;

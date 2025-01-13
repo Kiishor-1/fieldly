@@ -10,26 +10,24 @@ const EditFieldForm = ({ fieldId, onSuccess, onClose }) => {
 
   const [formData, setFormData] = useState({
     name: "",
-    cropType: "",
-    areaSize: "",
+    cropTypes: [],
     location: null,
   });
 
   const [coordinates, setCoordinates] = useState(null);
+  const [currentCropType, setCurrentCropType] = useState(""); 
 
   useEffect(() => {
     if (fieldId) {
-      console.log("Fetching field with ID:", fieldId);
       dispatch(fetchFieldById(fieldId));
     }
   }, [dispatch, fieldId]);
 
   useEffect(() => {
     if (field) {
-      console.log("Field data loaded:", field);
       setFormData({
         name: field.name || "",
-        cropType: field.cropType || "",
+        cropTypes: field.cropType || [], 
         areaSize: field.areaSize || "",
         location: field.location || null,
       });
@@ -39,14 +37,32 @@ const EditFieldForm = ({ fieldId, onSuccess, onClose }) => {
 
   useEffect(() => {
     if (coordinates) {
-      console.log("Coordinates updated:", coordinates);
       setFormData((prev) => ({ ...prev, location: coordinates }));
     }
   }, [coordinates]);
 
   const handleChange = (e) => {
-    console.log("Field changed:", e.target.name, e.target.value);
     setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  console.log(field)
+
+  const handleCropTypeKeyPress = (e) => {
+    if (e.key === "Enter" && currentCropType.trim()) {
+      e.preventDefault();
+      setFormData((prev) => ({
+        ...prev,
+        cropTypes: [...prev.cropTypes, currentCropType.trim()],
+      }));
+      setCurrentCropType("");
+    }
+  };
+
+  const handleRemoveCropType = (index) => {
+    setFormData((prev) => ({
+      ...prev,
+      cropTypes: prev.cropTypes.filter((_, i) => i !== index),
+    }));
   };
 
   const handleSubmit = async (e) => {
@@ -57,12 +73,10 @@ const EditFieldForm = ({ fieldId, onSuccess, onClose }) => {
       return;
     }
 
-    console.log("Submitting form data:", formData);
-
     const resultAction = await dispatch(updateField({ id: fieldId, data: formData }));
     if (updateField.fulfilled.match(resultAction)) {
       toast.success("Field updated successfully!");
-      onSuccess();
+      onClose();
     } else {
       const errorMessage = resultAction.payload?.message || "Error updating field.";
       toast.error(errorMessage);
@@ -86,15 +100,33 @@ const EditFieldForm = ({ fieldId, onSuccess, onClose }) => {
             onChange={handleChange}
             required
           />
+
           <input
             type="text"
-            name="cropType"
-            placeholder="Crop Type"
+            placeholder="Add Crop Type"
             className="border lg:w-[80%] w-full mx-auto p-2 mb-4 rounded"
-            value={formData.cropType}
-            onChange={handleChange}
-            required
+            value={currentCropType}
+            onChange={(e) => setCurrentCropType(e.target.value)}
+            onKeyPress={handleCropTypeKeyPress}
           />
+          <div className="lg:w-[80%] w-full mx-auto mb-4">
+            {formData.cropTypes.map((crop, index) => (
+              <span
+                key={index}
+                className="inline-flex items-center px-3 py-1 bg-gray-200 text-gray-800 rounded-full mr-2 mb-2"
+              >
+                {crop}
+                <button
+                  type="button"
+                  className="ml-2 text-red-500 hover:text-red-700"
+                  onClick={() => handleRemoveCropType(index)}
+                >
+                  &times;
+                </button>
+              </span>
+            ))}
+          </div>
+
           <input
             type="number"
             name="areaSize"

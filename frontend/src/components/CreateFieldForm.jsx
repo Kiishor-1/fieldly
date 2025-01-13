@@ -10,11 +10,12 @@ const CreateFieldForm = ({ onSuccess, onClose }) => {
 
   const [formData, setFormData] = useState({
     name: "",
-    cropType: "",
+    cropType: [],
     areaSize: "",
     location: null,
   });
 
+  const [newCropType, setNewCropType] = useState("");
   const [coordinates, setCoordinates] = useState(null);
 
   useEffect(() => {
@@ -27,6 +28,17 @@ const CreateFieldForm = ({ onSuccess, onClose }) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
+  const handleCropTypeAdd = (e) => {
+    if (e.key === "Enter" && newCropType.trim()) {
+      e.preventDefault();
+      setFormData((prev) => ({
+        ...prev,
+        cropType: [...prev.cropType, newCropType.trim()],
+      }));
+      setNewCropType(""); // Clear the input
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -35,23 +47,27 @@ const CreateFieldForm = ({ onSuccess, onClose }) => {
       return;
     }
 
-    // console.log(formData);
+    if (!formData.cropType.length) {
+      toast.error("Please add at least one crop type.");
+      return;
+    }
 
     const resultAction = await dispatch(createField(formData));
     if (createField.fulfilled.match(resultAction)) {
-        toast.success("Field created successfully!");
-        onSuccess();
-        setFormData({
-            name: "",
-            cropType: "",
-            areaSize: "",
-            location: null,
-        });
-        setCoordinates(null);
-        onclose();
+      toast.success("Field created successfully!");
+      onSuccess();
+      setFormData({
+        name: "",
+        cropType: [],
+        areaSize: "",
+        location: null,
+      });
+      setCoordinates(null);
+      onClose();
     } else {
-        const errorMessage = resultAction.payload?.message || "Error creating field.";
-        toast.error(errorMessage);
+      const errorMessage =
+        resultAction.payload?.message || "Error creating field.";
+      toast.error(errorMessage);
     }
   };
 
@@ -74,15 +90,27 @@ const CreateFieldForm = ({ onSuccess, onClose }) => {
             onChange={handleChange}
             required
           />
-          <input
-            type="text"
-            name="cropType"
-            placeholder="Crop Type"
-            className="border lg:w-[80%] w-full mx-auto p-2 mb-4 rounded"
-            value={formData.cropType}
-            onChange={handleChange}
-            required
-          />
+          <div className="lg:w-[80%] w-full mx-auto mb-4">
+            <input
+              type="text"
+              name="cropTypeInput"
+              placeholder="Add Crop Type"
+              className="border p-2 w-full rounded"
+              value={newCropType}
+              onChange={(e) => setNewCropType(e.target.value)}
+              onKeyDown={handleCropTypeAdd}
+            />
+            <div className="flex gap-2 flex-wrap mt-2">
+              {formData.cropType.map((type, index) => (
+                <span
+                  key={index}
+                  className="bg-blue-200 text-blue-700 px-3 py-1 rounded-full"
+                >
+                  {type}
+                </span>
+              ))}
+            </div>
+          </div>
           <input
             type="number"
             name="areaSize"
@@ -92,9 +120,9 @@ const CreateFieldForm = ({ onSuccess, onClose }) => {
             onChange={handleChange}
             required
           />
-          {formData?.location && (
+          {formData.location && (
             <span className="border w-[80%] mx-auto rounded px-4 py-2 text-center my-2">
-              Longitude: {formData?.location[0]}, Latitude: {formData?.location[1]}
+              Longitude: {formData.location[0]}, Latitude: {formData.location[1]}
             </span>
           )}
           <button
@@ -114,4 +142,3 @@ const CreateFieldForm = ({ onSuccess, onClose }) => {
 };
 
 export default CreateFieldForm;
-
