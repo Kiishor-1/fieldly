@@ -11,7 +11,7 @@ import { isStrongPassword } from "../utils/isStrongPassword";
 export default function Register() {
     const navigate = useNavigate();
     const dispatch = useDispatch();
-    const { user, token } = useSelector((state) => state.auth);
+    const { user, token, isLoading } = useSelector((state) => state.auth);
 
     useEffect(() => {
         if (user && token) {
@@ -31,6 +31,14 @@ export default function Register() {
     };
     const [formData, setFormData] = useState(initialValue);
     const [errors, setErrors] = useState({});
+
+
+    const [isDisabled, setIsDisabled] = useState(true);
+
+    useEffect(() => {
+        const { name, email, password, confirmPassword, role } = formData;
+        setIsDisabled(!name || !email || !password);
+    }, [formData]);
 
     const handleChange = (e) => {
         const { value, name } = e.target;
@@ -211,7 +219,9 @@ export default function Register() {
                     </div>
 
                     <div className="space-y-4 text-center">
-                        <button className="w-full py-2 rounded-full bg-teal-500 text-white text-lg font-semibold shadow hover:bg-teal-600">
+                        <button
+                            disabled={isLoading || isDisabled}
+                            className={`w-full py-2 rounded-full bg-teal-500 text-white text-lg font-semibold shadow hover:bg-teal-600 ${isLoading || isDisabled ? 'opacity-50 cursor-not-allowed' : ''}`}>
                             Register
                         </button>
                         <p className="text-md mt-6 text-gray-600">

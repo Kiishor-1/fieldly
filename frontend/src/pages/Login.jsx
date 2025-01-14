@@ -14,7 +14,7 @@ export default function Login() {
     const dispatch = useDispatch();
     const [showPassword, setShowPassword] = useState(false);
 
-    const { user, token } = useSelector((state) => state.auth);
+    const { user, token, isLoading } = useSelector((state) => state.auth);
 
     useEffect(() => {
         if (user && token) {
@@ -27,6 +27,12 @@ export default function Login() {
         password: "",
     };
     const [formData, setFormData] = useState(initialValue);
+    const [isDisabled, setIsDisabled] = useState(true);
+
+    useEffect(() => {
+        const { email, password } = formData;
+        setIsDisabled(!email || !password || isLoading);
+    }, [formData, isLoading]);
 
     const handleChange = (e) => {
         setFormData((prev) => {
@@ -119,7 +125,8 @@ export default function Login() {
                     <div className="flex flex-col items-center gap-4">
                         <button
                             type="submit"
-                            className="w-full py-3 rounded-full bg-teal-600 text-white font-medium hover:bg-teal-700 transition">
+                            disabled={isLoading || isDisabled}
+                            className={`w-full py-3 rounded-full bg-teal-600 text-white font-medium hover:bg-teal-700 transition  ${isLoading || isDisabled ? 'opacity-50 cursor-not-allowed' : ''}`}>
                             Log in
                         </button>
                         <p className="text-gray-600 text-md">
