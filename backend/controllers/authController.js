@@ -5,7 +5,14 @@ const passwordStrengthValidator = require('../utils/passwordStrength');
 
 exports.register = async (req, res) => {
     try {
-        const { name, email, password, confirmPassword } = req.body;
+        const { name, email, password, confirmPassword, role } = req.body;
+
+        if (role && !["Admin", "User"].includes(role)) {
+            return res.status(400).json({
+                success: false,
+                error: "Invalid role. Allowed values are 'Admin' and 'User'.",
+            });
+        }
 
         let existingUser = await User.findOne({ email });
         if (existingUser) {
@@ -20,6 +27,7 @@ exports.register = async (req, res) => {
             name,
             email,
             password: hashedPassword,
+            role: role || "User",
         });
 
         return res.status(200).json({
@@ -34,6 +42,7 @@ exports.register = async (req, res) => {
         });
     }
 };
+
 
 
 exports.login = async (req, res) => {
@@ -87,7 +96,7 @@ exports.login = async (req, res) => {
             res.cookie("token", token, options).status(200).json({
                 success: true,
                 token,
-                user: { _id: user._id, name: user.name, email: user.email },
+                user: { _id: user._id, name: user.name, email: user.email,role:user?.role },
                 message: `User Login Success`,
             })
         } else {

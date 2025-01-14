@@ -1,4 +1,4 @@
-const Joi = require('joi')
+const Joi = require('joi');
 const passwordStrengthValidator = require('./utils/passwordStrength');
 
 module.exports.userSchema = Joi.object({
@@ -18,4 +18,10 @@ module.exports.userSchema = Joi.object({
         'any.required': 'Confirm Password is required',
         'any.only': 'Passwords must match',
     }),
+    role: Joi.string()
+        .valid('Admin', 'User')
+        .messages({
+            'any.required': 'Role is required',
+            'any.only': 'Role must be one of Admin or User',
+        }),
 });

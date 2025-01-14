@@ -95,8 +95,70 @@ const generateAnalysis = async (req, res) => {
 };
 
 
+const adminAnalyltics = async (req, res) => {
+    try {
+        const fields = await Field.find();
+        const totalLand = fields.reduce((sum, field) => sum + field.areaSize, 0);
+        const cropTypesCount = {};
+        fields.forEach((field) => {
+            field.cropType.forEach((crop) => {
+                cropTypesCount[crop] = (cropTypesCount[crop] || 0) + 1;
+            });
+        });
+
+        const cropTypes = Object.entries(cropTypesCount).map(([type, count]) => ({
+            type,
+            count,
+        }));
+        const yieldData = fields
+            .flatMap((field) => field.harvestData)
+            .reduce((acc, curr) => {
+                const existing = acc.find((data) => data.month === curr.month);
+                if (existing) {
+                    existing.yield += curr.yield;
+                } else {
+                    acc.push({ month: curr.month, yield: curr.yield });
+                }
+                return acc;
+            }, []);
+
+        // Calculate market trends (Positive vs Negative)
+        const trendCount = fields.reduce(
+            (acc, field) => {
+                if (field.analytics.marketTrends === "Negative") {
+                    acc.negative++;
+                } else {
+                    acc.positive++;
+                }
+                return acc;
+            },
+            { positive: 0, negative: 0 }
+        );
+
+        const marketTrends = trendCount.negative > trendCount.positive ? "Negative" : "Positive";
+
+        // Respond with analytics data
+        res.json({
+            totalLand,
+            cropTypes,
+            yieldData,
+            marketTrends, // dynamic market trend calculation
+            fields: fields.map((field) => ({
+                location: field.location,
+                name: field.name,
+            })),
+        });
+    } catch (error) {
+        console.error("Error fetching analytics data:", error);
+        res.status(500).json({ message: "Failed to fetch analytics data" });
+    }
+};
+
+
+
 
 module.exports = {
     userFieldsAnalysis,
-    generateAnalysis
+    generateAnalysis,
+    adminAnalyltics
 }

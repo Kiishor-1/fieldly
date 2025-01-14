@@ -4,10 +4,11 @@ const Subscription = require('../models/Subscription')
 const User = require('../models/User');
 const authMiddleware = require('../middlewares/authMiddleware');
 const { subscriptions, createOrder, verifyPayment } = require('../controllers/subscriptionController');
+const { isUser } = require('../middlewares/isUser');
 
 
-router.get('/allSubscriptions', authMiddleware, subscriptions)
-router.post('/createOrder', authMiddleware, createOrder);
-router.post('/verify-payment', authMiddleware, verifyPayment)
+router.get('/allSubscriptions', authMiddleware, isUser, subscriptions)
+router.post('/createOrder', authMiddleware, isUser, createOrder);
+router.post('/verify-payment', authMiddleware, isUser, verifyPayment)
 
 module.exports = router;

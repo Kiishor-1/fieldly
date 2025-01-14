@@ -72,15 +72,21 @@ export default function Login() {
     };
 
     return (
-        <div className="flex flex-col md:flex-row w-full min-h-screen font-sans">
-            <div className="flex-1 flex flex-col justify-center items-center py-8 px-4">
+        <div className="relative w-full h-screen font-sans">
+            <div className="absolute top-4 left-4">
+                <div className="flex items-center justify-center w-full md:text-3xl font-bold text-2xl">
+                    <img src="/images/logo.png" className="w-10" alt="Logo" />
+                    <span className="text-gray-700 px-2">Fieldly</span>
+                </div>
+            </div>
+            <div className="w-full h-full flex flex-col justify-center items-center py-8 px-4">
                 <form
                     onSubmit={handleSubmit}
-                    className="w-full max-w-md space-y-6 bg-white rounded-lg p-8">
+                    className="w-full max-w-md space-y-6 bg-white rounded-lg md:p-8">
                     <p className="text-2xl font-semibold text-gray-800 text-center">Login</p>
 
                     <div className="flex items-center border rounded-lg p-2">
-                        <CiMail className="font-bold mx-1" fontSize="1.5rem" />
+                        <CiMail className="font-bold mx-1" fontSize="1.3rem" />
                         <input
                             type="email"
                             name="email"
@@ -93,7 +99,7 @@ export default function Login() {
                     </div>
 
                     <div className="flex items-center border rounded-lg p-2">
-                        <CiLock className="font-bold mx-1" fontSize="1.5rem" />
+                        <CiLock className="font-bold mx-1" fontSize="1.3rem" />
                         <input
                             type={showPassword ? "text" : "password"}
                             name="password"

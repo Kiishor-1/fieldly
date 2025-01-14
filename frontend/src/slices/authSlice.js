@@ -157,6 +157,7 @@ const getTokenFromLocalStorage = () => {
 const initialState = {
     user: getUserFromLocalStorage(),
     token: getTokenFromLocalStorage(),
+    role:"User",
     error: null,
     isLoading: false,
     status: 'idle',
@@ -201,6 +202,7 @@ const authSlice = createSlice({
                 state.isLoading = false;
                 state.user = action.payload.user;
                 state.token = action.payload.token;
+                state.role = action.payload.user?.role;
                 state.status = 'succeed';
                 localStorage.setItem("user", JSON.stringify(action.payload.user));
                 localStorage.setItem("token", action.payload.token);
