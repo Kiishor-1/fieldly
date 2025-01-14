@@ -11,6 +11,7 @@ const port = process.env.PORT || 8080;
 const authRoutes = require('./routes/authRoutes');
 const fieldRoute = require('./routes/fieldRoutes')
 const subscriptionRoutes = require('./routes/subscriptionRoutes')
+const analyticsRoutes = require('./routes/analyticsRoutes')
 
 const FRONT_ENDS = process.env.FRONT_ENDS.split(',');
 
@@ -50,37 +51,7 @@ app.get("/", (req, res) => {
 app.use("/api/v1/auth", authRoutes);
 app.use("/api/v1/fields", fieldRoute);
 app.use("/api/v1/subscriptions", subscriptionRoutes);
-app.post("/api/v1/generate-analysis", (req, res) => {
-    try {
-        const { cost, stock, growth, analytics } = req.body;
-
-        const response = `
-        Based on the given data: 
-        - Cost is ${cost}.
-        - Stock availability is ${stock}.
-        - Growth rate is ${growth}.
-        - Analytics indicate ${analytics}.
-        
-        Recommendations:
-        - Optimize the cost by focusing on high-yield crops.
-        - Manage stock levels to reduce waste.
-        - Monitor growth with advanced irrigation methods.
-        - Leverage analytics to predict future trends.`;
-
-        // Send the generated response
-        res.status(200).json({
-            success: true,
-            message: 'Analysis done',
-            generatedText: response
-        });
-    } catch (err) {
-        console.log(err)
-        res.status(500).json({
-            success: false,
-            message: 'Internal Server Error'
-        });
-    }
-});
+app.use("/api/v1/analytics", analyticsRoutes);
 
 app.all("*", (req, res, next) => {
     const error = new Error("No such routes available");

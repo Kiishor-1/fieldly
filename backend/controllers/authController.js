@@ -6,7 +6,6 @@ const passwordStrengthValidator = require('../utils/passwordStrength');
 exports.register = async (req, res) => {
     try {
         const { name, email, password, confirmPassword } = req.body;
-        console.log(req.body)
 
         let existingUser = await User.findOne({ email });
         if (existingUser) {

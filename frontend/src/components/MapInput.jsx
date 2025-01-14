@@ -4,7 +4,6 @@ import axios from "axios";
 import toast from "react-hot-toast";
 import { FaMagnifyingGlass } from "react-icons/fa6";
 
-// Mapbox access token
 mapboxgl.accessToken =import.meta.env.VITE_REACT_APP_MAPBOX_API_KEY;
 
 const MapInput = ({ onCoordinatesChange, initialCoordinates }) => {
@@ -21,7 +20,6 @@ const MapInput = ({ onCoordinatesChange, initialCoordinates }) => {
 
 
   useEffect(() => {
-    // Initialize the map
     const initializedMap = new mapboxgl.Map({
       container: mapContainerRef.current,
       style: isNightTimeInIndia()
@@ -34,10 +32,8 @@ const MapInput = ({ onCoordinatesChange, initialCoordinates }) => {
 
     initializedMap.on("load", () => setMap(initializedMap)); 
 
-    // Add marker placement logic
     initializedMap.on("click", (e) => {
       const { lng, lat } = e.lngLat;
-      console.log(`Clicked at Longitude: ${lng}, Latitude: ${lat}`);
       onCoordinatesChange([lng, lat]);
 
       if (markerRef.current) {

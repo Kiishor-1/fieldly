@@ -15,8 +15,6 @@ const FieldManager = () => {
     dispatch(fetchAllFields());
   }, [dispatch]);
 
-  console.log(fields)
-
   return (
     <div className="p-4">
       <div className="flex items-center justify-between">

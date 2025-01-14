@@ -6,7 +6,6 @@ export const axiosInstance = axios.create({
 
 export const apiConnector = (method, url, bodyData, headers, params) => {
     console.log(`[API Connector]: ${method} - ${axiosInstance.defaults.baseURL}${url}`);
-    console.log(url, bodyData);
     return axiosInstance({
         method: method.toUpperCase(), 
         url: url.startsWith("/") ? url : `/${url}`,

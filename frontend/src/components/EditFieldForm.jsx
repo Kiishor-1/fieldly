@@ -45,8 +45,6 @@ const EditFieldForm = ({ fieldId, onSuccess, onClose }) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  console.log(field)
-
   const handleCropTypeKeyPress = (e) => {
     if (e.key === "Enter" && currentCropType.trim()) {
       e.preventDefault();

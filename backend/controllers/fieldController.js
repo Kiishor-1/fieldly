@@ -43,6 +43,64 @@ const getFieldById = async (req, res) => {
   }
 };
 
+
+const calculateAnalytics = (field) => {
+  const totalCost = field.harvestData.reduce((total, data) => total + data.cost, 0);
+
+  const averageGrowth =
+    field.monitoringData.length > 0
+      ? field.monitoringData.reduce((total, data) => total + parseFloat(data.growth || "0"), 0) /
+        field.monitoringData.length
+      : 0;
+
+  const marketTrends = averageGrowth > 5 ? "Positive" : "Negative";
+
+  const totalStock = field.harvestData.reduce((total, data) => total + data.yield, 0);
+
+  return {
+    totalCost,
+    averageGrowth: averageGrowth.toFixed(2),
+    marketTrends,
+    totalStock,
+  };
+};
+
+
+const addFieldData = async (req, res) => {
+  const { id } = req.params;
+  const { monitoringData, harvestData } = req.body;
+  console.log(req.body)
+
+  try {
+    const field = await Field.findById(id);
+
+    if (!field) {
+      return res.status(404).json({ message: "Field not found" });
+    }
+
+    if (monitoringData) {
+      field.monitoringData.push(monitoringData);
+    }
+
+    if (harvestData) {
+      field.harvestData.push(harvestData);
+    }
+
+    field.analytics = calculateAnalytics(field);
+
+    await field.save();
+
+    res.status(200).json({
+      message: "Data added successfully",
+      field,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Error adding data", error });
+  }
+};
+
+
 const createField = async (req, res) => {
   try {
     const { name, cropType, areaSize, location } = req.body;
@@ -59,10 +117,10 @@ const createField = async (req, res) => {
       cropType,
       areaSize,
       location,
-      owner: req.user.id, 
+      owner: req.user.id,
     });
 
-    const user = await User.findById(req.user.id); 
+    const user = await User.findById(req.user.id);
     if (!user) {
       return res.status(404).json({ success: false, message: "User not found" });
     }
@@ -88,7 +146,6 @@ const updateField = async (req, res) => {
   try {
     const { location } = req.body;
 
-    console.log(req.body)
 
     if (location && (!Array.isArray(location) || location.length !== 2)) {
       return res.status(400).json({
@@ -122,7 +179,7 @@ const updateField = async (req, res) => {
 };
 
 const deleteField = async (req, res) => {
-  console.log('id toh hai kya',req.params.id)
+  console.log('id toh hai kya', req.params.id)
   try {
     const field = await Field.findById(req.params.id);
     if (!field) {
@@ -163,10 +220,12 @@ const deleteField = async (req, res) => {
   }
 };
 
+
 module.exports = {
   getUserOwnedFields,
   getFieldById,
   createField,
   updateField,
   deleteField,
+  addFieldData,
 };

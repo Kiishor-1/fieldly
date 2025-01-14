@@ -15,8 +15,8 @@ export const fetchAllFields = createAsyncThunk(
     "fields/fetchAllFields",
     async (_, { rejectWithValue, getState }) => {
         try {
-            const token = getState().auth.token; // Extract the token from the auth slice
-            const headers = token ? { Authorization: `Bearer ${token}` } : {}; // Include the token in headers if available
+            const token = getState().auth.token;
+            const headers = token ? { Authorization: `Bearer ${token}` } : {}; 
 
             const response = await apiConnector("GET", FETCH_USER_FIELDS, null, headers);
             console.log("data is", response?.data);

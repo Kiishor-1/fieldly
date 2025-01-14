@@ -10,24 +10,16 @@ const razorpay = new Razorpay({
 
 
 const subscriptions = async (req, res) => {
-    console.log('Request received');
-
     try {
         const userId = req.user.id;
         const user = await User.findById(userId).populate('subscribedSubscriptions');
-
-        console.log('Fetched User:', user);
 
         if (!user) {
             return res.status(404).json({ message: 'User not found' });
         }
         const userSubscriptionsId = user.subscribedSubscriptions.map((sub) => sub._id.toString());
-        console.log('User Subscription IDs:', userSubscriptionsId);
-
 
         const allSubscriptions = await Subscription.find();
-        console.log('All Subscriptions:', allSubscriptions);
-
 
         const userSubscriptions = allSubscriptions.filter((sub) => 
             userSubscriptionsId.includes(sub._id.toString())
@@ -36,9 +28,6 @@ const subscriptions = async (req, res) => {
         const availableSubscriptions = allSubscriptions.filter(
             (sub) => !userSubscriptionsId.includes(sub._id.toString())
         );
-
-        console.log('User Subscriptions:', userSubscriptions);
-        console.log('Available Subscriptions:', availableSubscriptions);
 
 
         res.status(200).json({ userSubscriptions, availableSubscriptions });
@@ -51,7 +40,7 @@ const subscriptions = async (req, res) => {
 
 const createOrder = async (req, res) => {
     const { amount, subscriptionId } = req.body;
-    const userId = req.user.id; // Assuming userId is available in `req.user`
+    const userId = req.user.id;
 
     if (!amount || !subscriptionId) {
         return res.status(400).json({ error: 'Amount and Subscription ID are required' });
@@ -64,7 +53,7 @@ const createOrder = async (req, res) => {
         }
 
         const options = {
-            amount: amount * 100, // amount in paise
+            amount: amount * 100,
             currency: 'INR',
             receipt: `receipt_${Date.now()}`,
             payment_capture: 1
@@ -81,7 +70,7 @@ const createOrder = async (req, res) => {
 
 const verifyPayment = async (req, res) => {
     const { razorpay_order_id, razorpay_payment_id, razorpay_signature, subscriptionId } = req.body;
-    const userId = req.user.id; // Assuming userId is available in `req.user`
+    const userId = req.user.id;
 
     if (!razorpay_order_id || !razorpay_payment_id || !razorpay_signature || !subscriptionId) {
         return res.status(400).json({ error: 'All payment verification fields are required' });

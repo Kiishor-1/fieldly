@@ -35,7 +35,7 @@ const CreateFieldForm = ({ onSuccess, onClose }) => {
         ...prev,
         cropType: [...prev.cropType, newCropType.trim()],
       }));
-      setNewCropType(""); // Clear the input
+      setNewCropType("");
     }
   };
 

@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
 import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
-import { FaHome } from "react-icons/fa";
+import { FaHome, FaPlusCircle } from "react-icons/fa";
 import { useDispatch, useSelector } from "react-redux";
 import { IoIosHelpCircleOutline } from "react-icons/io";
 import { IoAnalyticsSharp } from "react-icons/io5";
-import { FiLogOut, FiSettings } from "react-icons/fi";
+import { FiLogOut, FiPlusCircle, FiSettings } from "react-icons/fi";
 import { LuLandPlot } from "react-icons/lu";
 import { MdOutlinePayments } from "react-icons/md";
 import toast from "react-hot-toast";
@@ -36,7 +36,6 @@ const Home = () => {
       sessionExpired();
     }
   }, [token, user, navigate, dispatch]);
-  console.log(token)
 
   const handleLogout = async () => {
     try {
@@ -68,8 +67,8 @@ const Home = () => {
   return (
     <div className="flex h-screen overflow-hidden p-2 bg-gray-100">
       <div
-        className={`fixed inset-y-0 left-0 md:rounded-xl bg-white  shadow-lg w-56 transform z-10 ${isSidebarOpen ? "translate-x-0" : "-translate-x-full"
-          } transition-transform duration-300 md:relative md:translate-x-0 cursor-pointer`}
+        className={`fixed inset-y-0 left-0 md:rounded-xl bg-white  shadow-lg w-56 transform z-10 ${isSidebarOpen ? "block" : "hidden"
+          } transition-transform duration-300 md:relative lg:block cursor-pointer`}
         onClick={() => setIsSidebarOpen(false)}
       >
         <div className="w-full flex items-center justify-center md:px-2 px-2 py-2">
@@ -101,19 +100,19 @@ const Home = () => {
         </nav>
 
         <div className="absolute flex flex-col items-cente gap-4 px-3 py-3 rounded-lg font-medium text-sm bottom-10 left-5 cursor-pointer">
-          <button
+          {/* <button
             className="flex items-center gap-2"
           >
             <FiSettings />
             Settings
-          </button>
-          <button
+          </button> */}
+          {/* <button
             className="flex items-center gap-2"
             onClick={()=>setGetHelp(true)}
           >
             <IoIosHelpCircleOutline />
             Help
-          </button>
+          </button> */}
           <button
             onClick={() => setIsOpen(true)}
             className="flex items-center gap-2"
@@ -125,7 +124,7 @@ const Home = () => {
       </div>
 
       <div
-        className={`flex-1 ps-4 transition-opacity duration-300 ${isSidebarOpen ? "opacity-50" : "opacity-100"
+        className={`flex-1 md:ps-2 transition-opacity duration-300 ${isSidebarOpen ? "opacity-50" : "opacity-100"
           } overflow-y-auto hideScroll`}
       >
         <Header toggleSidebar={toggleSidebar} />
