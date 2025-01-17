@@ -133,7 +133,7 @@ const CreateFieldForm = ({ onSuccess, onClose }) => {
             {isLoading ? "Creating..." : "Create Field"}
           </button>
         </div>
-        <div className="md:w-[50%] h-auto w-full rounded-md">
+        <div className="md:w-[50%] h-full w-full rounded-md">
           <MapInput onCoordinatesChange={setCoordinates} />
         </div>
       </form>

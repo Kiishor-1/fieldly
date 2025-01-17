@@ -43,6 +43,9 @@
     width: 100% !important;
     border-radius: 0.5rem !important;
 }
+.mapboxgl-map {
+    overflow:visible !important;
+}
 
 .map-container {
     position: relative;

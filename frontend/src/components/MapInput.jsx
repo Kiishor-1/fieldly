@@ -101,7 +101,7 @@ const MapInput = ({ onCoordinatesChange, initialCoordinates }) => {
         </button>
       </div>
       <div
-        className="map-container rounded-lg flex-1"
+        className="map-container rounded-lg flex-1 p-4 min-h-[250px]"
         ref={mapContainerRef}
       ></div>
     </div>
