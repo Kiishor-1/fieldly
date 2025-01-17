@@ -40,7 +40,7 @@ const MapInput = ({ onCoordinatesChange, initialCoordinates }) => {
         markerRef.current.remove();
       }
 
-      markerRef.current = new mapboxgl.Marker({ offset: [275, -458] })
+      markerRef.current = new mapboxgl.Marker()
         .setLngLat([lng, lat])
         .addTo(initializedMap);
     });
