@@ -33,17 +33,13 @@ const Home = () => {
         }, 1000);
       };
       sessionExpired();
-    } else if (user?.role === "Admin") {
-      navigate('/admin');
-    } else {
-      navigate('/')
     }
   }, [token, user, navigate, dispatch]);
 
   const handleLogout = async () => {
     try {
       dispatch(logoutUser());
-      toast.success("User logged out successfully");
+      // toast.success("User logged out successfully");
       navigate("/login");
     } catch (error) {
       console.log(error);
